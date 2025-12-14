@@ -11,9 +11,6 @@ import (
 const (
 	width  = 800
 	height = 600
-	// MousePassthrough is the definition for GLFW_MOUSE_PASSTHROUGH which might be missing in older bindings.
-	// Value: 0x0002000D
-	MousePassthrough glfw.Hint = 0x0002000D
 )
 
 func main() {
@@ -30,7 +27,6 @@ func main() {
 	glfw.WindowHint(glfw.Floating, glfw.True)               // Always on top
 	glfw.WindowHint(glfw.Decorated, glfw.False)             // No border/title bar
 	glfw.WindowHint(glfw.TransparentFramebuffer, glfw.True) // Transparent background
-	glfw.WindowHint(MousePassthrough, glfw.True)            // Click-through
 
 	window, err := glfw.CreateWindow(width, height, "Crosshair", nil, nil)
 	if err != nil {
