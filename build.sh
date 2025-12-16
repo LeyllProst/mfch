@@ -21,7 +21,7 @@ go build -o mfch main.go
 # Requires mingw-w64: brew install mingw-w64
 if command -v x86_64-w64-mingw32-gcc &> /dev/null; then
     echo "Building for Windows 7 (64-bit)..."
-    CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o mfch.exe main.go
+    CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -extldflags '-static'" -o mfch.exe main.go
 else
     echo "Skipping Windows build: x86_64-w64-mingw32-gcc not found."
     echo "Please install mingw-w64 (e.g., 'brew install mingw-w64')."
