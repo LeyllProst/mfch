@@ -1,7 +1,3 @@
 module mfch
 
-go 1.21
-
-require github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
-
-require github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
+go 1.20

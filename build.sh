@@ -1,28 +1,31 @@
 #!/bin/bash
 
-# Ensure dependencies are up to date
-go mod tidy
+# Build script for MFCH (Native Windows Version)
 
-# Check Go version strictly for Windows 7 compliance
+echo "Preparing build for Windows..."
+
+# Check Go version for Windows 7 compatibility advice
 GO_VER=$(go env GOVERSION)
-# Check if version starts with go1.21 or go1.20 (allow patch versions)
-if [[ "$GO_VER" != "go1.21"* ]] && [[ "$GO_VER" != "go1.20"* ]]; then
-    echo "WARNING: Your Go version is $GO_VER."
-    echo "         Windows 7 requires Go 1.21 or older."
-    echo "         The resulting Windows binary may NOT run on Windows 7."
-    echo "         Proceeding anyway..."
+echo "Current Go version: $GO_VER"
+if [[ "$GO_VER" == "go1.21"* ]] || [[ "$GO_VER" > "go1.21" ]]; then
+    echo "WARNING: Go 1.21+ does not officially support Windows 7."
+    echo "         For Windows 7 support, please use Go 1.20 or older."
 fi
 
-# Build for macOS
-echo "Building for macOS..."
-go build -o mfch main.go
+# Clean previous builds
+rm -f mfch.exe mfch
 
-# Build for Windows 7 (64-bit)
-# Requires mingw-w64: brew install mingw-w64
-if command -v x86_64-w64-mingw32-gcc &> /dev/null; then
-    echo "Building for Windows 7 (64-bit)..."
-    CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -extldflags '-static'" -o mfch.exe main.go
+# Build for Windows
+# CGO_ENABLED=0: Use pure Go implementation (no MinGW needed)
+# -H windowsgui: Hide console window
+# -s -w: Strip debug info for smaller binary
+echo "Building 'mfch.exe' (Windows)..."
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags "-H windowsgui -s -w" -o mfch.exe main.go
+
+if [ $? -eq 0 ]; then
+    echo "SUCCESS: mfch.exe created."
+    ls -lh mfch.exe
 else
-    echo "Skipping Windows build: x86_64-w64-mingw32-gcc not found."
-    echo "Please install mingw-w64 (e.g., 'brew install mingw-w64')."
+    echo "FAILURE: Build failed."
+    exit 1
 fi
